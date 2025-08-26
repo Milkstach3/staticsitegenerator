@@ -1,14 +1,15 @@
 import os
 import pathlib
 from markdown_blocks import markdown_to_html_node
-from CONSTANTS import DESTINATION_DIR, TEMPLATE_PATH, DESTINATION_FILE, FROM_PATH, CONTENT_DIR
+from CONSTANTS import DESTINATION_DIR, TEMPLATE_PATH, DESTINATION_FILE, FROM_PATH, CONTENT_DIR, BASE_PATH
 import re
 
 
 def generate_page(
-        from_path: str = FROM_PATH, 
-        template_path: str = TEMPLATE_PATH, 
-        dest_path: str = DESTINATION_FILE
+        from_path: str =        FROM_PATH, 
+        template_path: str =    TEMPLATE_PATH, 
+        dest_path: str =        DESTINATION_FILE,
+        base_path: str =        BASE_PATH
         ) -> None:
     
     print(f"Generating page from {from_path} to {dest_path} using {template_path}") 
@@ -27,6 +28,8 @@ def generate_page(
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", markdown_html_str)
+    template = template.replace("href=\"/", f"href=\"{base_path}")
+    template = template.replace("src=\"/", f"src=\"{base_path}")
     
     with open(dest_path, 'w') as file:
         file.write(template)
@@ -40,19 +43,18 @@ def extract_title(markdown: str) -> str:
 
 def generate_pages_recursive(
         dir_path_content: str = CONTENT_DIR, 
-        template_path: str = TEMPLATE_PATH, 
-        dest_dir_path: str = DESTINATION_DIR
+        template_path: str =    TEMPLATE_PATH, 
+        dest_dir_path: str =    DESTINATION_DIR,
+        base_path: str =        BASE_PATH
         ) -> None:
     list_dir: list[str] = os.listdir(dir_path_content)
-    # print(f"LIST OF STUFF IN list_dir::::::::{list_dir}")
+    
     for item in list_dir:
         if os.path.isfile(os.path.join(dir_path_content, item)):
             if item.endswith('.md'):
                 from_path = os.path.join(dir_path_content, item)
                 dest_path = os.path.join(dest_dir_path, item.replace('.md', '.html'))
-                # print(f"FROM PATH: {from_path}")
-                # print(f"DEST PATH: {dest_path}")
-                generate_page(from_path, template_path, dest_path)
+                generate_page(from_path, template_path, dest_path, base_path)
         else:
             new_dir_content = os.path.join(dir_path_content, item)
             new_dest_dir = os.path.join(dest_dir_path, item)
