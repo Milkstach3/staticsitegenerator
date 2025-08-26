@@ -28,8 +28,8 @@ def generate_page(
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", markdown_html_str)
-    template = template.replace("href=\"/", f"href=\"{base_path}")
-    template = template.replace("src=\"/", f"src=\"{base_path}")
+    template = template.replace("href=\"", f"href=\"{base_path}")
+    template = template.replace("src=\"", f"src=\"{base_path}")
     
     with open(dest_path, 'w') as file:
         file.write(template)
