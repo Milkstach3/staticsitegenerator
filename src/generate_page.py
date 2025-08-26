@@ -28,9 +28,11 @@ def generate_page(
 
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", markdown_html_str)
+
     template = template.replace("href=\"/", f"href=\"{base_path}")
     template = template.replace("src=\"/", f"src=\"{base_path}")
     
+
     with open(dest_path, 'w') as file:
         file.write(template)
 
@@ -59,7 +61,7 @@ def generate_pages_recursive(
             new_dir_content = os.path.join(dir_path_content, item)
             new_dest_dir = os.path.join(dest_dir_path, item)
             pathlib.Path(new_dest_dir).mkdir(parents=True, exist_ok=True)
-            generate_pages_recursive(new_dir_content, template_path, new_dest_dir)
+            generate_pages_recursive(new_dir_content, template_path, new_dest_dir, base_path)
     
     # pathlib.Path
     
